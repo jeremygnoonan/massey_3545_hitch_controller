@@ -40,7 +40,7 @@ void loop()
 
   recordedSetHitchHeight = currenSetHitchHeight;   
 
-  if(loopCount % 50 == 0){
+  if(loopCount % 125 == 0){
     lcd.clear();
     lcd.setCursor(0,0);  // set the cursor to column 15, line 0
     lcd.print("Hitch Set: ");
