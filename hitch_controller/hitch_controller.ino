@@ -4,17 +4,19 @@
 //Website:www.primerobotics.in
 //2015.5.7 
 #include <LiquidCrystal.h>// include the library code
+#include "HitchCalibration.h"
 /**********************************************************/
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(4, 6, 10, 11, 12, 13);
+
+HitchCalibration hitchCalibration(A5);
 /*********************************************************/
 
 int recordedSetHitchHeight = 0;
 int recordedSensorHeight = 0;
+int loopCount = 0;
 
-int averagedReadings[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-int readingCount = 0;
 
 void setup()
 {
@@ -30,39 +32,31 @@ void setup()
 /*********************************************************/
 void loop() 
 {
-
-
   float currenSetHitchHeightFloat  = 100 - (analogRead(A0) / 1023.0 * 100);
   int currenSetHitchHeight = (int)currenSetHitchHeightFloat;
 
-  averagedReadings[readingCount] = analogRead(A5);
-  readingCount++;
-  if(readingCount == 80){
-    readingCount = 0;
-  }
+  hitchCalibration.updateAverage();
+  int position = hitchCalibration.getPosition();
 
-  int pAverage = 0;
+  recordedSetHitchHeight = currenSetHitchHeight;   
 
-  for(int i = 0; i < 80; i++){
-    pAverage += averagedReadings[i];
-  }
-
-  pAverage = pAverage / 80;
-
-  Serial.print("Prenus ");
-  Serial.println(pAverage);
-  
-  if(abs(currenSetHitchHeight-recordedSetHitchHeight) >2){
-    recordedSetHitchHeight = currenSetHitchHeight;   
-
+  if(loopCount % 50 == 0){
     lcd.clear();
     lcd.setCursor(0,0);  // set the cursor to column 15, line 0
     lcd.print("Hitch Set: ");
     lcd.print(currenSetHitchHeight);
     lcd.print("%");
+
+
     lcd.setCursor(0,1);
-    lcd.print("Hitch Cur: 24%");
+    lcd.print("Hitch Cur: ");
+    lcd.print(position);
+
+    loopCount = 0;
   }
+
+  loopCount++;
+  
 
   delay(2);
 }
