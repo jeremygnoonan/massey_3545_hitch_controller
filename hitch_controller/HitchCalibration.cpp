@@ -28,9 +28,7 @@ int HitchCalibration::getPosition() {
       interval = 0;
     }
 
-    Serial.println(interval);
-
-    return ((positionCount - 1) * stepsPerInterval) - (i * stepsPerInterval) - interval - (stepsPerInterval * 3);
+    return ((positionCount - 1) * stepsPerInterval) - (i * stepsPerInterval) - interval - (stepsPerInterval * 6);
   }
 
   return -1;
