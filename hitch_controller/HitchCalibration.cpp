@@ -13,6 +13,7 @@ int HitchCalibration::getPosition() {
   int position = 0;
   int currentAverage = getCurrentAverage();
   
+  //Serial.println(currentAverage);
   for(int i = 0; i < positionCount -1; i++){
     
     int lower = positionData[i];
